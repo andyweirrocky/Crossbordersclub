@@ -1,5 +1,5 @@
 import streamlit as st
-from agents.reddit_scout.agent import get_passport_visa_info
+from agents.reddit_scout.agent import agent  # Import the agent instead of the function
 import os
 from dotenv import load_dotenv
 
@@ -17,8 +17,7 @@ load_dotenv()
 # Debug information
 st.sidebar.markdown("### Debug Information")
 st.sidebar.write("Environment Variables Status:")
-for var in ['REDDIT_CLIENT_ID', 'REDDIT_CLIENT_SECRET', 'REDDIT_USER_AGENT']:
-    # Only show if exists, mask the actual value
+for var in ['REDDIT_CLIENT_ID', 'REDDIT_CLIENT_SECRET', 'REDDIT_USER_AGENT', 'GOOGLE_API_KEY']:
     exists = var in os.environ
     st.sidebar.write(f"- {var}: {'✅ Set' if exists else '❌ Missing'}")
 
@@ -26,7 +25,8 @@ for var in ['REDDIT_CLIENT_ID', 'REDDIT_CLIENT_SECRET', 'REDDIT_USER_AGENT']:
 required_vars = [
     'REDDIT_CLIENT_ID',
     'REDDIT_CLIENT_SECRET',
-    'REDDIT_USER_AGENT'
+    'REDDIT_USER_AGENT',
+    'GOOGLE_API_KEY'
 ]
 
 missing_vars = [var for var in required_vars if not os.getenv(var)]
@@ -61,7 +61,8 @@ st.markdown("""
 with st.sidebar:
     st.title("About")
     st.markdown("""
-    This agent helps you find information about visas, passports, and citizenship opportunities from Reddit.
+    This AI agent helps you find information about visas, passports, and citizenship opportunities from Reddit.
+    Powered by Google's Gemini and ADK (Agent Development Kit).
     
     ### How to use:
     1. Ask questions about:
@@ -69,8 +70,8 @@ with st.sidebar:
        - Visa types
        - Immigration processes
        - Citizenship options
-    2. The agent will search relevant Reddit discussions
-    3. Get real-time information from the community
+    2. The AI agent will search relevant Reddit discussions
+    3. Get real-time information and insights from the community
     
     ### Example questions:
     - "What are the best visa options for digital nomads?"
@@ -81,7 +82,7 @@ with st.sidebar:
 # Main content
 st.title("Your AI Visa Agent")
 st.markdown("""
-Ask questions about visas, passports, or immigration topics. The agent will search Reddit for relevant discussions and provide you with up-to-date information from the community.
+Ask questions about visas, passports, or immigration topics. The AI agent will search Reddit for relevant discussions and provide you with up-to-date information and insights from the community.
 """)
 
 # Check for missing environment variables
@@ -89,14 +90,15 @@ if missing_vars:
     st.error(f"Missing required environment variables: {', '.join(missing_vars)}")
     st.markdown("""
     ### ⚠️ Configuration Required
-    The application needs API keys to function. Please make sure all required environment variables are set in Streamlit Cloud:
+    The application needs API keys to function. Please make sure all required environment variables are set:
     
     1. Go to your app settings
     2. Find the "Secrets" section
     3. Add the following variables:
-       - `REDDIT_CLIENT_ID`
-       - `REDDIT_CLIENT_SECRET`
-       - `REDDIT_USER_AGENT`
+       - `REDDIT_CLIENT_ID` (from Reddit API)
+       - `REDDIT_CLIENT_SECRET` (from Reddit API)
+       - `REDDIT_USER_AGENT` (from Reddit API)
+       - `GOOGLE_API_KEY` (from Google AI Studio)
     """)
 else:
     # Initialize chat history
@@ -117,41 +119,21 @@ else:
 
         # Get agent response
         with st.chat_message("assistant"):
-            with st.spinner("Searching Reddit for relevant information..."):
+            with st.spinner("AI agent searching and analyzing Reddit discussions..."):
                 try:
-                    # Call the function directly
-                    response = get_passport_visa_info(query=prompt)
+                    # Use the ADK agent to get a response
+                    response = agent.chat(prompt)
                     
-                    if "error" in response:
-                        st.error(f"Error: {response['error'][0]['title']}")
-                        st.session_state.messages.append({
-                            "role": "assistant", 
-                            "content": f"⚠️ {response['error'][0]['title']}"
-                        })
-                    else:
-                        # Format the response
-                        formatted_response = "Here's what I found:\n\n"
-                        for subreddit, posts in response.items():
-                            if posts:  # Only show subreddits with posts
-                                formatted_response += f"### From r/{subreddit}\n\n"
-                                for post in posts:
-                                    formatted_response += f"**{post['title']}**\n"
-                                    formatted_response += f"- Score: {post['score']} | Comments: {post['num_comments']} | Date: {post['created_utc']}\n"
-                                    if post['flair']:
-                                        formatted_response += f"- Flair: {post['flair']}\n"
-                                    if post['selftext']:
-                                        formatted_response += f"- Summary: {post['selftext'][:200]}...\n"
-                                    formatted_response += f"- [Read more]({post['url']})\n\n"
-                        
-                        st.markdown(formatted_response)
-                        st.session_state.messages.append({
-                            "role": "assistant", 
-                            "content": formatted_response
-                        })
+                    # Add the response to chat history
+                    st.markdown(response)
+                    st.session_state.messages.append({
+                        "role": "assistant",
+                        "content": response
+                    })
                 except Exception as e:
                     error_message = f"An error occurred: {str(e)}"
                     st.error(error_message)
                     st.session_state.messages.append({
-                        "role": "assistant", 
+                        "role": "assistant",
                         "content": f"⚠️ {error_message}"
                     }) 
