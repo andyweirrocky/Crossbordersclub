@@ -6,12 +6,19 @@ from dotenv import load_dotenv
 # Load environment variables
 load_dotenv()
 
+# Debug information
+st.sidebar.markdown("### Debug Information")
+st.sidebar.write("Environment Variables Status:")
+for var in ['REDDIT_CLIENT_ID', 'REDDIT_CLIENT_SECRET', 'REDDIT_USER_AGENT']:
+    # Only show if exists, mask the actual value
+    exists = var in os.environ
+    st.sidebar.write(f"- {var}: {'✅ Set' if exists else '❌ Missing'}")
+
 # Check for required environment variables
 required_vars = [
     'REDDIT_CLIENT_ID',
     'REDDIT_CLIENT_SECRET',
-    'REDDIT_USER_AGENT',
-    'GOOGLE_API_KEY'
+    'REDDIT_USER_AGENT'
 ]
 
 missing_vars = [var for var in required_vars if not os.getenv(var)]
@@ -26,7 +33,7 @@ st.set_page_config(
 
 # Custom CSS for better styling
 st.markdown("""
-<style>
+    <style>
     .main {
         padding: 2rem;
     }
@@ -47,7 +54,7 @@ st.markdown("""
         border-radius: 4px;
         margin: 1rem 0;
     }
-</style>
+    </style>
 """, unsafe_allow_html=True)
 
 # Sidebar
@@ -90,7 +97,6 @@ if missing_vars:
        - `REDDIT_CLIENT_ID`
        - `REDDIT_CLIENT_SECRET`
        - `REDDIT_USER_AGENT`
-       - `GOOGLE_API_KEY`
     """)
 else:
     # Initialize chat history
@@ -116,23 +122,36 @@ else:
                     # Call the function directly
                     response = get_passport_visa_info(query=prompt)
                     
-                    # Format the response
-                    formatted_response = "Here's what I found:\n\n"
-                    for subreddit, posts in response.items():
-                        if subreddit != "error":
-                            formatted_response += f"### From r/{subreddit}\n\n"
-                            for post in posts:
-                                formatted_response += f"**{post['title']}**\n"
-                                formatted_response += f"- Score: {post['score']} | Comments: {post['num_comments']} | Date: {post['created_utc']}\n"
-                                if post['flair']:
-                                    formatted_response += f"- Flair: {post['flair']}\n"
-                                if post['selftext']:
-                                    formatted_response += f"- Summary: {post['selftext'][:200]}...\n"
-                                formatted_response += f"- [Read more]({post['url']})\n\n"
-                    
-                    st.markdown(formatted_response)
-                    st.session_state.messages.append({"role": "assistant", "content": formatted_response})
+                    if "error" in response:
+                        st.error(f"Error: {response['error'][0]['title']}")
+                        st.session_state.messages.append({
+                            "role": "assistant", 
+                            "content": f"⚠️ {response['error'][0]['title']}"
+                        })
+                    else:
+                        # Format the response
+                        formatted_response = "Here's what I found:\n\n"
+                        for subreddit, posts in response.items():
+                            if posts:  # Only show subreddits with posts
+                                formatted_response += f"### From r/{subreddit}\n\n"
+                                for post in posts:
+                                    formatted_response += f"**{post['title']}**\n"
+                                    formatted_response += f"- Score: {post['score']} | Comments: {post['num_comments']} | Date: {post['created_utc']}\n"
+                                    if post['flair']:
+                                        formatted_response += f"- Flair: {post['flair']}\n"
+                                    if post['selftext']:
+                                        formatted_response += f"- Summary: {post['selftext'][:200]}...\n"
+                                    formatted_response += f"- [Read more]({post['url']})\n\n"
+                        
+                        st.markdown(formatted_response)
+                        st.session_state.messages.append({
+                            "role": "assistant", 
+                            "content": formatted_response
+                        })
                 except Exception as e:
-                    error_message = f"Error: {str(e)}"
+                    error_message = f"An error occurred: {str(e)}"
                     st.error(error_message)
-                    st.session_state.messages.append({"role": "assistant", "content": f"⚠️ {error_message} Please try again or contact support if the issue persists."}) 
+                    st.session_state.messages.append({
+                        "role": "assistant", 
+                        "content": f"⚠️ {error_message}"
+                    }) 

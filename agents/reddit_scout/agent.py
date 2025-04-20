@@ -4,6 +4,8 @@ from typing import Dict, List, TypedDict
 from datetime import datetime
 
 from google.adk.agents import Agent
+import praw
+from praw.exceptions import PRAWException
 
 from dotenv import load_dotenv
 print("--- Attempting to load .env file ---")
@@ -13,9 +15,6 @@ print("--- Checking for environment variables ---")
 print(f"CLIENT_ID exists: {'REDDIT_CLIENT_ID' in os.environ}")
 print(f"CLIENT_SECRET exists: {'REDDIT_CLIENT_SECRET' in os.environ}")
 print(f"USER_AGENT exists: {'REDDIT_USER_AGENT' in os.environ}")
-
-import praw
-from praw.exceptions import PRAWException
 
 class RedditPost(TypedDict):
     title: str
@@ -31,59 +30,49 @@ def get_passport_visa_info(query: str = "", subreddit: str = "all", limit: int =
     """
     Fetches visa, passport, and citizenship-related posts from relevant subreddits.
     """
-    print(f"--- Tool called: Fetching information about {query if query else 'visa/passport'} from r/{subreddit} ---")
-    
-    # List of relevant subreddits for immigration, visas, and citizenship
-    RELEVANT_SUBREDDITS = [
-        "immigration",          # General immigration discussions
-        "USCIS",               # US immigration
-        "visas",               # General visa discussions
-        "IWantOut",            # Immigration and relocation
-        "PassportPorn",        # Passport discussions
-        "expats",              # Expat community
-        "Schengen",            # Schengen visa discussions
-        "ukvisa",              # UK visa discussions
-        "GermanCitizenship",   # German citizenship
-        "dualcitizenship",     # Dual citizenship discussions
-        "goldenvisa",          # Investment/Golden visa programs
-        "digitalnomad",        # Digital nomad visas
-        "eupersonalfinance",   # EU immigration/financial aspects
-        "iwantoutjobs"         # Jobs for immigration
-    ]
-
-    client_id = os.getenv("REDDIT_CLIENT_ID")
-    client_secret = os.getenv("REDDIT_CLIENT_SECRET")
-    user_agent = os.getenv("REDDIT_USER_AGENT")
-
-    if not all([client_id, client_secret, user_agent]):
-        missing_creds = []
-        if not client_id:
-            missing_creds.append("REDDIT_CLIENT_ID")
-        if not client_secret:
-            missing_creds.append("REDDIT_CLIENT_SECRET")
-        if not user_agent:
-            missing_creds.append("REDDIT_USER_AGENT")
-            
-        error_msg = f"Missing Reddit API credentials in .env file: {', '.join(missing_creds)}. Please create a .env file with these credentials."
-        print(f"--- Tool error: {error_msg} ---")
-        return {"error": [{"title": error_msg, "url": "", "score": 0, "num_comments": 0, "created_utc": "", "flair": "", "selftext": "", "subreddit": ""}]}
-
     try:
+        client_id = os.environ.get("REDDIT_CLIENT_ID")
+        client_secret = os.environ.get("REDDIT_CLIENT_SECRET")
+        user_agent = os.environ.get("REDDIT_USER_AGENT")
+
+        if not all([client_id, client_secret, user_agent]):
+            missing_creds = []
+            if not client_id:
+                missing_creds.append("REDDIT_CLIENT_ID")
+            if not client_secret:
+                missing_creds.append("REDDIT_CLIENT_SECRET")
+            if not user_agent:
+                missing_creds.append("REDDIT_USER_AGENT")
+                
+            error_msg = f"Missing Reddit API credentials: {', '.join(missing_creds)}. Please check your Streamlit Cloud secrets configuration."
+            return {"error": [{"title": error_msg, "url": "", "score": 0, "num_comments": 0, "created_utc": "", "flair": "", "selftext": "", "subreddit": ""}]}
+
         reddit = praw.Reddit(
             client_id=client_id,
             client_secret=client_secret,
             user_agent=user_agent,
         )
 
+        # Test the Reddit connection
+        try:
+            reddit.user.me()
+        except Exception as e:
+            error_msg = f"Failed to connect to Reddit API. Please verify your credentials. Error: {str(e)}"
+            return {"error": [{"title": error_msg, "url": "", "score": 0, "num_comments": 0, "created_utc": "", "flair": "", "selftext": "", "subreddit": ""}]}
+
         # Remove 'r/' prefix if present in the subreddit name
         subreddit = subreddit.replace('r/', '')
 
-        # If a specific subreddit is requested, use that
-        if subreddit != "all":
+        # If a specific subreddit is requested and it's in our list, use that
+        if subreddit != "all" and subreddit in RELEVANT_SUBREDDITS:
             try:
                 sub = reddit.subreddit(subreddit)
-                # Get hot posts directly without search query
-                posts = list(sub.hot(limit=limit))
+                # Search for posts with the query
+                if query:
+                    posts = list(sub.search(query, limit=limit))
+                else:
+                    posts = list(sub.hot(limit=limit))
+                
                 if posts:
                     post_info = []
                     for post in posts:
@@ -105,12 +94,17 @@ def get_passport_visa_info(query: str = "", subreddit: str = "all", limit: int =
                 print(f"--- Error accessing r/{subreddit}: {str(e)} ---")
                 return {"error": [{"title": f"Error accessing r/{subreddit}: {str(e)}", "url": "", "score": 0, "num_comments": 0, "created_utc": "", "flair": "", "selftext": "", "subreddit": subreddit}]}
 
-        # For "all", search across relevant subreddits
+        # For "all" or if the subreddit wasn't in our list, search across relevant subreddits
         results = {}
         for sub_name in RELEVANT_SUBREDDITS:
             try:
                 sub = reddit.subreddit(sub_name)
-                posts = list(sub.hot(limit=5))  # Limit to 5 posts per subreddit when searching all
+                # Search for posts with the query
+                if query:
+                    posts = list(sub.search(query, limit=5))
+                else:
+                    posts = list(sub.hot(limit=5))
+                
                 if posts:
                     post_info = []
                     for post in posts:
@@ -125,13 +119,14 @@ def get_passport_visa_info(query: str = "", subreddit: str = "all", limit: int =
                             "selftext": post.selftext[:500] + "..." if len(post.selftext) > 500 else post.selftext,
                             "subreddit": sub_name
                         })
-                    results[sub_name] = post_info
+                    if post_info:  # Only add subreddits that have matching posts
+                        results[sub_name] = post_info
             except Exception as e:
                 print(f"--- Warning: Error fetching from r/{sub_name}: {e} ---")
                 continue
 
         if not results:
-            return {"info": [{"title": "No posts found in any subreddit", "url": "", "score": 0, "num_comments": 0, "created_utc": "", "flair": "", "selftext": "", "subreddit": ""}]}
+            return {"info": [{"title": "No relevant posts found in any immigration subreddit", "url": "", "score": 0, "num_comments": 0, "created_utc": "", "flair": "", "selftext": "", "subreddit": ""}]}
         
         return results
 
