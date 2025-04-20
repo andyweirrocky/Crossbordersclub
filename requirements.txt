@@ -1,3 +1,5 @@
 google-adk
 praw
-python-dotenv 
+python-dotenv
+streamlit
+streamlit-chat 
