@@ -3,6 +3,14 @@ from agents.reddit_scout.agent import get_passport_visa_info
 import os
 from dotenv import load_dotenv
 
+# Set page config (MUST be the first Streamlit command)
+st.set_page_config(
+    page_title="Your AI Visa Agent",
+    page_icon="🔍",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+
 # Load environment variables
 load_dotenv()
 
@@ -22,14 +30,6 @@ required_vars = [
 ]
 
 missing_vars = [var for var in required_vars if not os.getenv(var)]
-
-# Set page config
-st.set_page_config(
-    page_title="Your AI Visa Agent",
-    page_icon="🔍",
-    layout="wide",
-    initial_sidebar_state="expanded"
-)
 
 # Custom CSS for better styling
 st.markdown("""
