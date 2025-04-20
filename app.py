@@ -2,20 +2,9 @@ import streamlit as st
 from agents.reddit_scout.agent import agent
 import os
 from dotenv import load_dotenv
-import google.cloud.aiplatform as aiplatform
-from vertexai.language_models import TextGenerationModel
 
 # Load environment variables
 load_dotenv()
-
-# Initialize Google AI Platform
-try:
-    aiplatform.init(
-        project=os.getenv("GOOGLE_CLOUD_PROJECT", "default-project"),
-        location=os.getenv("GOOGLE_CLOUD_LOCATION", "us-central1"),
-    )
-except Exception as e:
-    print(f"Error initializing AI Platform: {e}")
 
 # Check for required environment variables
 required_vars = [
@@ -29,7 +18,7 @@ missing_vars = [var for var in required_vars if not os.getenv(var)]
 
 # Set page config
 st.set_page_config(
-    page_title="Reddit Scout Agent",
+    page_title="Your AI Visa Agent",
     page_icon="🔍",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -83,7 +72,7 @@ with st.sidebar:
     """)
 
 # Main content
-st.title("🔍 Reddit Scout Agent")
+st.title("Your AI Visa Agent")
 st.markdown("""
 Ask questions about visas, passports, or immigration topics. The agent will search Reddit for relevant discussions and provide you with up-to-date information from the community.
 """)
@@ -124,24 +113,25 @@ else:
         with st.chat_message("assistant"):
             with st.spinner("Searching Reddit for relevant information..."):
                 try:
-                    # Create the agent's input
-                    agent_input = {
-                        "messages": [
-                            {"role": "user", "content": prompt}
-                        ]
-                    }
-                    
                     # Get the response from the agent
-                    response = agent.invoke(agent_input)
+                    response = agent.get_passport_visa_info(query=prompt)
                     
-                    # Extract the response content
-                    if isinstance(response, dict) and "content" in response:
-                        content = response["content"]
-                    else:
-                        content = str(response)
+                    # Format the response
+                    formatted_response = "Here's what I found:\n\n"
+                    for subreddit, posts in response.items():
+                        if subreddit != "error":
+                            formatted_response += f"### From r/{subreddit}\n\n"
+                            for post in posts:
+                                formatted_response += f"**{post['title']}**\n"
+                                formatted_response += f"- Score: {post['score']} | Comments: {post['num_comments']} | Date: {post['created_utc']}\n"
+                                if post['flair']:
+                                    formatted_response += f"- Flair: {post['flair']}\n"
+                                if post['selftext']:
+                                    formatted_response += f"- Summary: {post['selftext'][:200]}...\n"
+                                formatted_response += f"- [Read more]({post['url']})\n\n"
                     
-                    st.markdown(content)
-                    st.session_state.messages.append({"role": "assistant", "content": content})
+                    st.markdown(formatted_response)
+                    st.session_state.messages.append({"role": "assistant", "content": formatted_response})
                 except Exception as e:
                     error_message = f"Error: {str(e)}"
                     st.error(error_message)
