@@ -26,6 +26,24 @@ class RedditPost(TypedDict):
     selftext: str
     subreddit: str
 
+# List of relevant subreddits for immigration, visas, and citizenship
+RELEVANT_SUBREDDITS = [
+    "immigration",          # General immigration discussions
+    "USCIS",               # US immigration
+    "visas",               # General visa discussions
+    "IWantOut",            # Immigration and relocation
+    "PassportPorn",        # Passport discussions
+    "expats",              # Expat community
+    "Schengen",            # Schengen visa discussions
+    "ukvisa",              # UK visa discussions
+    "GermanCitizenship",   # German citizenship
+    "dualcitizenship",     # Dual citizenship discussions
+    "goldenvisa",          # Investment/Golden visa programs
+    "digitalnomad",        # Digital nomad visas
+    "eupersonalfinance",   # EU immigration/financial aspects
+    "iwantoutjobs"         # Jobs for immigration
+]
+
 def get_passport_visa_info(query: str = "", subreddit: str = "all", limit: int = 15) -> Dict[str, List[RedditPost]]:
     """
     Fetches visa, passport, and citizenship-related posts from relevant subreddits.
