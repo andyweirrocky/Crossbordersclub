@@ -1,5 +1,5 @@
 import streamlit as st
-from agents.reddit_scout.agent import agent
+from agents import reddit_scout_agent as agent
 import os
 from dotenv import load_dotenv
 
