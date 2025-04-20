@@ -1,5 +1,5 @@
 import streamlit as st
-from agents.reddit_scout.agent import agent
+from agents.reddit_scout.agent import agent, get_passport_visa_info
 import os
 from dotenv import load_dotenv
 
@@ -113,10 +113,25 @@ else:
         with st.chat_message("assistant"):
             with st.spinner("Searching Reddit for relevant information..."):
                 try:
-                    # Use the agent's run method instead of chat
-                    response = agent.run(prompt)
-                    st.markdown(response)
-                    st.session_state.messages.append({"role": "assistant", "content": response})
+                    # Use the agent's invoke method with the get_passport_visa_info function
+                    response = get_passport_visa_info(query=prompt)
+                    
+                    # Format the response
+                    formatted_response = "Here's what I found:\n\n"
+                    for subreddit, posts in response.items():
+                        if subreddit != "error":
+                            formatted_response += f"### From r/{subreddit}\n\n"
+                            for post in posts:
+                                formatted_response += f"**{post['title']}**\n"
+                                formatted_response += f"- Score: {post['score']} | Comments: {post['num_comments']} | Date: {post['created_utc']}\n"
+                                if post['flair']:
+                                    formatted_response += f"- Flair: {post['flair']}\n"
+                                if post['selftext']:
+                                    formatted_response += f"- Summary: {post['selftext'][:200]}...\n"
+                                formatted_response += f"- [Read more]({post['url']})\n\n"
+                    
+                    st.markdown(formatted_response)
+                    st.session_state.messages.append({"role": "assistant", "content": formatted_response})
                 except Exception as e:
                     error_message = f"Error: {str(e)}"
                     st.error(error_message)
