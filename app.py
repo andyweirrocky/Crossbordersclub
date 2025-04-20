@@ -1,5 +1,5 @@
 import streamlit as st
-from agents.reddit_scout.agent import agent
+from agents.reddit_scout.agent import get_passport_visa_info
 import os
 from dotenv import load_dotenv
 
@@ -113,8 +113,8 @@ else:
         with st.chat_message("assistant"):
             with st.spinner("Searching Reddit for relevant information..."):
                 try:
-                    # Get the response from the agent
-                    response = agent.get_passport_visa_info(query=prompt)
+                    # Call the function directly
+                    response = get_passport_visa_info(query=prompt)
                     
                     # Format the response
                     formatted_response = "Here's what I found:\n\n"
