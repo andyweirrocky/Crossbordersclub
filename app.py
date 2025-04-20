@@ -113,7 +113,8 @@ else:
         with st.chat_message("assistant"):
             with st.spinner("Searching Reddit for relevant information..."):
                 try:
-                    response = agent.chat(prompt)
+                    # Use the agent's run method instead of chat
+                    response = agent.run(prompt)
                     st.markdown(response)
                     st.session_state.messages.append({"role": "assistant", "content": response})
                 except Exception as e:
