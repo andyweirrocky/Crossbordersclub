@@ -1,5 +1,5 @@
 import streamlit as st
-from agents.reddit_scout.agent import agent  # Import the agent instead of the function
+from agents.reddit_scout.agent import agent
 import os
 from dotenv import load_dotenv
 
@@ -14,14 +14,7 @@ st.set_page_config(
 # Load environment variables
 load_dotenv()
 
-# Debug information
-st.sidebar.markdown("### Debug Information")
-st.sidebar.write("Environment Variables Status:")
-for var in ['REDDIT_CLIENT_ID', 'REDDIT_CLIENT_SECRET', 'REDDIT_USER_AGENT', 'GOOGLE_API_KEY']:
-    exists = var in os.environ
-    st.sidebar.write(f"- {var}: {'✅ Set' if exists else '❌ Missing'}")
-
-# Check for required environment variables
+# Check for required environment variables without displaying them
 required_vars = [
     'REDDIT_CLIENT_ID',
     'REDDIT_CLIENT_SECRET',
@@ -30,6 +23,13 @@ required_vars = [
 ]
 
 missing_vars = [var for var in required_vars if not os.getenv(var)]
+
+# Debug information (only showing status, not actual values)
+st.sidebar.markdown("### System Status")
+if missing_vars:
+    st.sidebar.error("⚠️ Some required configurations are missing")
+else:
+    st.sidebar.success("✅ All systems operational")
 
 # Custom CSS for better styling
 st.markdown("""
@@ -57,7 +57,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Sidebar
+# Sidebar content
 with st.sidebar:
     st.title("About")
     st.markdown("""
@@ -87,19 +87,7 @@ Ask questions about visas, passports, or immigration topics. The AI agent will s
 
 # Check for missing environment variables
 if missing_vars:
-    st.error(f"Missing required environment variables: {', '.join(missing_vars)}")
-    st.markdown("""
-    ### ⚠️ Configuration Required
-    The application needs API keys to function. Please make sure all required environment variables are set:
-    
-    1. Go to your app settings
-    2. Find the "Secrets" section
-    3. Add the following variables:
-       - `REDDIT_CLIENT_ID` (from Reddit API)
-       - `REDDIT_CLIENT_SECRET` (from Reddit API)
-       - `REDDIT_USER_AGENT` (from Reddit API)
-       - `GOOGLE_API_KEY` (from Google AI Studio)
-    """)
+    st.error("Configuration error. Please contact the administrator.")
 else:
     # Initialize chat history
     if "messages" not in st.session_state:
@@ -122,7 +110,7 @@ else:
             with st.spinner("AI agent searching and analyzing Reddit discussions..."):
                 try:
                     # Use the ADK agent to get a response
-                    response = agent.chat(prompt)
+                    response = agent.generate(prompt)
                     
                     # Add the response to chat history
                     st.markdown(response)
@@ -131,7 +119,9 @@ else:
                         "content": response
                     })
                 except Exception as e:
-                    error_message = f"An error occurred: {str(e)}"
+                    error_message = "An error occurred while processing your request. Please try again."
+                    if os.getenv('DEBUG'):  # Only show detailed error in debug mode
+                        error_message += f"\nError details: {str(e)}"
                     st.error(error_message)
                     st.session_state.messages.append({
                         "role": "assistant",
