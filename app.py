@@ -13,6 +13,13 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
+# Add mobile notice
+st.markdown("""
+    <div style="background-color: #fff3cd; color: #856404; padding: 0.5rem; border: 1px solid #ffeeba; border-radius: 4px; margin-bottom: 1rem; text-align: center; font-size: 0.9rem;">
+        📱 <strong>Note:</strong> For the best experience, please view on desktop. Mobile optimization coming soon!
+    </div>
+""", unsafe_allow_html=True)
+
 # Load environment variables
 load_dotenv()
 
