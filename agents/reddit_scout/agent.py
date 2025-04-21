@@ -2,7 +2,7 @@ import os
 from typing import Dict, List, TypedDict
 from datetime import datetime
 
-from google_adk.generative import Agent
+from google.adk.generative import Agent
 import praw
 from praw.exceptions import PRAWException
 

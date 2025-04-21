@@ -1,4 +1,4 @@
-google-adk==0.0.5
+google-adk>=0.2.0
 praw==7.7.1
 python-dotenv==1.0.0
 streamlit==1.31.1
