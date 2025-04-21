@@ -56,10 +56,10 @@ with st.sidebar:
     
     st.markdown("""
     <div style="padding: 1.5rem; background: #f8f9fa; border-radius: 12px; margin: 1.5rem 0; border: 1px solid #e9ecef;">
-        <h4 style="margin-top: 0;">👋 Welcome!</h4>
-        <p>I'm <strong>Rooban</strong>, a passionate traveler who understands the challenges of navigating visa applications and paperwork, especially as a holder of a weaker passport.</p>
-        <p>CrossBordersClub was born from my personal experiences and the desire to help others who dream of exploring the world freely.</p>
-        <p><em>Together, let's make international travel more accessible! 🌍✈️</em></p>
+        <h4 style="margin-top: 0;">Welcome! 👋</h4>
+        <p>I'm <strong>Rooban</strong>. Holding a passport that requires extra planning hasn't stopped me from doing my fair share of traveling! I've learned a lot navigating the world of visas and paperwork.</p>
+        <p>I'm building CrossBordersClub – a larger community and resource hub to make this easier for everyone.</p>
+        <p>For now, think of this chat as your AI companion. It uses insights gathered from real traveler experiences on communities like Reddit to help answer your questions on visas, passports, and immigration. Enjoy the assist! 🌍</p>
     </div>
     """, unsafe_allow_html=True)
     
@@ -95,8 +95,14 @@ with st.sidebar:
 # Main content
 st.markdown("""
     <div style="background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%); color: white; padding: 3rem 2rem; border-radius: 24px; margin: -2rem -1rem 2rem -1rem; position: relative; overflow: hidden; box-shadow: 0 10px 30px rgba(33,150,243,0.2);">
-        <h1 style="font-size: 3rem; font-weight: 700; margin-bottom: 1rem; line-height: 1.2; color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.1);">Your AI Visa & Immigration Assistant</h1>
-        <p style="font-size: 1.25rem; opacity: 0.9; max-width: 600px; line-height: 1.6; margin-bottom: 2rem;">Navigate the complexities of global mobility with AI-powered insights from real community experiences. Get accurate, up-to-date information about visas, immigration, and citizenship opportunities.</p>
+        <div style="position: absolute; top: 0; right: 0; width: 300px; height: 300px; background: linear-gradient(45deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%); border-radius: 50%; transform: translate(100px, -100px);"></div>
+        <div style="position: relative; z-index: 1;">
+            <h1 style="font-size: 3.5rem; font-weight: 800; margin-bottom: 1.5rem; line-height: 1.2; color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.1); background: linear-gradient(120deg, #ffffff 0%, #e3f2fd 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Your AI Visa & Immigration Assistant</h1>
+            <p style="font-size: 1.35rem; opacity: 0.95; max-width: 700px; line-height: 1.6; margin-bottom: 2rem; text-shadow: 0 1px 2px rgba(0,0,0,0.1);">Navigate the complexities of global mobility with AI-powered insights from real community experiences. Get accurate, up-to-date information about visas, immigration, and citizenship opportunities.</p>
+            <div style="display: inline-block; padding: 0.75rem 1.5rem; background: rgba(255,255,255,0.1); border-radius: 12px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2);">
+                <span style="font-size: 1.1rem; font-weight: 500;">🔍 Ask me anything about visas and immigration</span>
+            </div>
+        </div>
     </div>
 """, unsafe_allow_html=True)
 
