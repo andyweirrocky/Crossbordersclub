@@ -169,72 +169,101 @@ adk-made-simple/
 └── PLAN.md                  # Development plan notes
 ```
 
-# Reddit Scout Agent
+# AI Visa Agent
 
-A web-based agent that helps users find information about visas, passports, and citizenship opportunities by searching through Reddit discussions.
+An AI-powered assistant that helps users find information about visas, passports, and immigration by analyzing Reddit discussions and providing up-to-date insights from the community.
 
 ## Features
 
-- Real-time Reddit search for visa and passport information
-- Interactive chat interface
-- Mobile-friendly design
-- Easy-to-use web interface
+- Real-time Reddit post analysis
+- Smart conversation handling
+- Comprehensive immigration information
+- User-friendly chat interface
+- Automatic source citation
 
-## Local Development
+## Setup
 
 1. Clone the repository:
-   ```bash
-   git clone https://github.com/yourusername/reddit-scout-agent.git
-   cd reddit-scout-agent
-   ```
+```bash
+git clone <your-repo-url>
+cd adk-made-simple
+```
 
-2. Create and activate a virtual environment:
-   ```bash
-   python -m venv .venv
-   # On Windows
-   .\.venv\Scripts\activate
-   # On macOS/Linux
-   source .venv/bin/activate
-   ```
+2. Install dependencies:
+```bash
+pip install -r requirements.txt
+```
 
-3. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
+3. Set up environment variables:
+Create a `.env` file with the following:
+```env
+REDDIT_CLIENT_ID=your_reddit_client_id
+REDDIT_CLIENT_SECRET=your_reddit_client_secret
+REDDIT_USER_AGENT=your_reddit_user_agent
+GOOGLE_API_KEY=your_google_api_key
+```
 
-4. Create a `.env` file with your API credentials:
-   ```
-   REDDIT_CLIENT_ID=your_reddit_client_id
-   REDDIT_CLIENT_SECRET=your_reddit_client_secret
-   REDDIT_USER_AGENT=your_user_agent
-   GOOGLE_API_KEY=your_google_api_key
-   ```
+4. Run the app:
+```bash
+streamlit run app.py
+```
 
-5. Run the Streamlit app:
-   ```bash
-   streamlit run app.py
-   ```
+## Deployment on Streamlit Cloud
 
-## Deployment
-
-This app can be deployed to Streamlit Cloud:
-
-1. Push your code to GitHub
-2. Go to [Streamlit Cloud](https://streamlit.io/cloud)
-3. Connect your GitHub repository
-4. Set the main file path to `app.py`
-5. Add your environment variables
-6. Deploy!
+1. Fork this repository to your GitHub account
+2. Visit [share.streamlit.io](https://share.streamlit.io)
+3. Sign in with GitHub
+4. Deploy your app by selecting the repository
+5. Add your environment variables in the Streamlit Cloud settings
 
 ## Environment Variables
-
-The following environment variables are required:
 
 - `REDDIT_CLIENT_ID`: Your Reddit API client ID
 - `REDDIT_CLIENT_SECRET`: Your Reddit API client secret
 - `REDDIT_USER_AGENT`: Your Reddit API user agent
-- `GOOGLE_API_KEY`: Your Google AI API key
+- `GOOGLE_API_KEY`: Your Google API key for Gemini
+
+## Getting API Keys
+
+### Reddit API
+1. Visit [Reddit's App Preferences](https://www.reddit.com/prefs/apps)
+2. Click "Create App" or "Create Another App"
+3. Fill in the details:
+   - Name: AI Visa Agent
+   - App type: Script
+   - Description: AI assistant for visa information
+   - Redirect URI: http://localhost:8501
+4. Get your client ID and secret
+
+### Google API
+1. Visit [Google Cloud Console](https://console.cloud.google.com)
+2. Create a new project
+3. Enable the Gemini API
+4. Create API credentials
+5. Copy your API key
+
+## Usage
+
+After deployment, users can:
+1. Visit your Streamlit app URL
+2. Start chatting with the AI agent
+3. Ask questions about visas, passports, and immigration
+4. Get real-time information from Reddit discussions
+
+## Security Notes
+
+- Never commit your `.env` file
+- Keep your API keys secure
+- Use environment variables in Streamlit Cloud
+- Enable all security features in config.toml
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Submit a pull request
 
 ## License
 
-MIT License
+MIT License - feel free to use and modify for your own projects!

@@ -1,4 +1,4 @@
-from agents.reddit_scout.agent import get_passport_visa_info as get_info_original
+from agents.reddit_scout.agent import get_reddit_posts as get_info_original
 from agents.reddit_scout_mcp.agent import get_passport_visa_info as get_info_mcp
 import time
 

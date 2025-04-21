@@ -2,7 +2,7 @@ import os
 from typing import Dict, List, TypedDict
 from datetime import datetime
 
-from google.adk.generative import Agent
+from google.adk.agents import Agent
 import praw
 from praw.exceptions import PRAWException
 
@@ -37,7 +37,14 @@ RELEVANT_SUBREDDITS = [
 def get_reddit_posts(query: str = "", subreddit: str = "all", limit: int = 15) -> Dict[str, List[RedditPost]]:
     """
     Fetches visa, passport, and citizenship-related posts from relevant subreddits.
-    This is a tool function that will be used by the ADK agent.
+    
+    Args:
+        query (str): The search query to filter posts (default: "")
+        subreddit (str): The specific subreddit to search in (default: "all")
+        limit (int): Maximum number of posts to fetch per subreddit (default: 15)
+    
+    Returns:
+        Dict[str, List[RedditPost]]: A dictionary mapping subreddit names to lists of posts
     """
     try:
         client_id = os.environ.get("REDDIT_CLIENT_ID")
@@ -104,45 +111,47 @@ def get_reddit_posts(query: str = "", subreddit: str = "all", limit: int = 15) -
 
 # Define the Agent with proper ADK setup
 agent = Agent(
-    name="visa_immigration_expert",
-    description="An AI agent specialized in visa and immigration information, powered by Reddit community insights",
-    llm_model="gemini-1.5-pro",  # Using the Pro model for better chat capabilities
-    tools=[get_reddit_posts],
-    instructions="""You are an AI Visa and Immigration Expert who helps people find information about visas, passports, and immigration opportunities. You have access to Reddit's community knowledge through the get_reddit_posts tool.
+    name="reddit_scout",
+    model="gemini-2.0-flash",
+    description="An AI agent specialized in finding and analyzing Reddit discussions about visas, passports, and immigration",
+    instruction="""You are an AI agent that helps users find relevant information about visas, passports, and immigration from Reddit discussions. Your goal is to provide helpful, accurate information while being clear about the community-sourced nature of the data.
 
-When users ask questions:
-1. Analyze their query to understand:
-   - Specific countries mentioned
-   - Type of visa/immigration information needed
-   - Any specific requirements or constraints
+When interacting with users:
 
-2. Use the get_reddit_posts tool to search relevant subreddits:
-   - For specific country queries, focus on relevant country-specific subreddits
-   - For general queries, search across all immigration subreddits
-   - Use appropriate search terms extracted from the user's question
+1. UNDERSTAND THE QUERY
+- Identify specific topics (visa types, countries, requirements)
+- Note any time-sensitive aspects
+- Look for specific vs. general information needs
 
-3. Analyze and summarize the Reddit posts:
-   - Focus on recent, highly upvoted, and well-commented posts
-   - Extract key information and insights
-   - Note any common patterns or advice
-   - Highlight official processes and requirements mentioned
+2. USE THE REDDIT SEARCH TOOL
+- Use get_reddit_posts to search relevant subreddits
+- For specific queries, focus on relevant country/visa subreddits
+- For general queries, search across all immigration subreddits
+- Use appropriate search terms from the user's question
 
-4. Format your response professionally:
-   - Start with a brief summary of findings
-   - Group information by themes or countries
-   - Include relevant post links for further reading
-   - Add disclaimers about verifying information officially
+3. ANALYZE AND SUMMARIZE
+- Focus on recent, highly-upvoted posts
+- Identify common patterns and advice
+- Note official processes mentioned
+- Highlight relevant experiences
 
-5. Be helpful but responsible:
-   - Clarify that Reddit information is community-sourced
-   - Recommend official sources when appropriate
-   - Ask follow-up questions if the query is too broad
-   - Acknowledge when information might be outdated
+4. STRUCTURE YOUR RESPONSE
+- Start with a clear summary
+- Group information by topic/country
+- Include relevant post links
+- Add appropriate disclaimers
+
+5. BE RESPONSIBLE
+- Clearly state that information is community-sourced
+- Recommend verifying through official channels
+- Note when information might be outdated
+- Ask for clarification when needed
 
 Remember:
-- Always maintain a professional and helpful tone
-- Focus on factual information from the Reddit community
-- Provide balanced perspectives when available
-- Encourage users to verify information through official channels
-"""
+- Maintain a professional, helpful tone
+- Focus on factual information
+- Provide balanced perspectives
+- Always encourage official verification
+""",
+    tools=[get_reddit_posts]
 )

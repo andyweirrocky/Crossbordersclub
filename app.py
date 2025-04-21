@@ -1,5 +1,5 @@
 import streamlit as st
-from agents import agent
+from agents.reddit_scout.chat_agent import chat_agent
 import os
 from dotenv import load_dotenv
 
@@ -109,8 +109,8 @@ else:
         with st.chat_message("assistant"):
             with st.spinner("AI agent searching and analyzing Reddit discussions..."):
                 try:
-                    # Use the ADK agent to get a response
-                    response = agent.generate(prompt)
+                    # Use the chat agent to get a response
+                    response = chat_agent.generate_response(prompt)
                     
                     # Add the response to chat history
                     st.markdown(response)
