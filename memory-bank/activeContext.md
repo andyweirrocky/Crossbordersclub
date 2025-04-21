@@ -48,4 +48,15 @@
 1. Initial setup and configuration
 2. Understanding existing codebase
 3. Identifying improvement opportunities
-4. Planning next steps 
+4. Planning next steps
+
+## Immigration System Key Topics
+
+### 1. Undocumented Status
+Key concerns around pathways to legal status, education access, and employment opportunities for undocumented individuals.
+
+### 2. USCIS Processing
+Analysis of current processing times, factors affecting delays, and community experiences with various application types.
+
+### 3. Immigration Policy
+Overview of recent policy changes and their impacts on different immigrant categories 

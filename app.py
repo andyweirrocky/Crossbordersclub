@@ -33,12 +33,55 @@ required_vars = [
 missing_vars = [var for var in required_vars if not os.getenv(var)]
 
 def format_reddit_links(text):
-    """Convert r/subreddit to proper links"""
-    return re.sub(
-        r'r/(\w+)',
+    """Convert Reddit URLs and structured link data to formatted markdown"""
+    def format_structured_link(summary, search_query, link_text="Search Reddit"):
+        # Create a clean URL-friendly version of the search query
+        url_query = search_query.replace(' ', '%20')
+        return f"""
+**{summary}**
+- Search: `{search_query}`
+- {link_text}: [Reddit Search](https://www.reddit.com/search/?q={url_query})
+"""
+    
+    # First try to parse structured link data
+    try:
+        import json
+        data = json.loads(text)
+        if isinstance(data, dict) and "summary" in data and "search_query" in data:
+            return format_structured_link(
+                data["summary"],
+                data["search_query"],
+                data.get("link_text", "Search Reddit")
+            )
+    except (json.JSONDecodeError, TypeError):
+        pass
+    
+    # If not structured data, handle regular Reddit URLs
+    def clean_title(title):
+        return title.replace('_', ' ').rstrip('/')
+    
+    # First, clean up any incorrectly nested markdown links
+    # Remove any nested markdown patterns
+    text = re.sub(r'\[(?:\[([^\]]+)\]\([^)]+\))\](?:\([^)]+\))', r'[\1]', text)
+    
+    # Handle full Reddit URLs - only if they're not already part of a markdown link
+    text = re.sub(
+        r'(?<!\]\()https?://(?:www\.)?reddit\.com/r/(\w+)/comments/([^/]+)/([^/\s]+)/?(?!\))',
+        lambda m: f'[{clean_title(m.group(3))}](https://reddit.com/r/{m.group(1)}/comments/{m.group(2)}/{m.group(3)})',
+        text
+    )
+    
+    # Handle r/subreddit mentions - only if they're not already part of a markdown link
+    text = re.sub(
+        r'(?<!\]\()(?<!/)(?<!\w)r/(\w+)(?!\w)(?!\))',
         r'[r/\1](https://reddit.com/r/\1)',
         text
     )
+    
+    # Clean up any double-wrapped links that might have been created
+    text = re.sub(r'\[(\[.*?\]\(.*?\))\]\(.*?\)', r'\1', text)
+    
+    return text
 
 def handle_example_question(question: str):
     """Handle when an example question is clicked"""
