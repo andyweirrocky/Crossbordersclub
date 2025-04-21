@@ -91,22 +91,32 @@ def handle_example_question(question: str):
 # Sidebar content
 with st.sidebar:
     st.markdown('''
-        <div style="display: flex; align-items: center; gap: 0.75rem; padding: 1rem;">
-            <span style="font-size: 24px;">🌐</span>
-            <h1 style="margin: 0; font-size: 1.5rem;">CrossBordersClub</h1>
+        <div style="display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem; margin-bottom: 0.5rem;">
+            <span style="font-size: 20px;">🌐</span>
+            <h1 style="margin: 0; font-size: 1.25rem;">CrossBordersClub</h1>
         </div>
     ''', unsafe_allow_html=True)
     
     st.markdown("""
-    <div style="padding: 1.5rem; background: #f8f9fa; border-radius: 12px; margin: 1.5rem 0; border: 1px solid #e9ecef;">
-        <h4 style="margin-top: 0;">Welcome! 👋</h4>
-        <p>I'm <strong>Rooban</strong>. Holding a passport that requires extra planning hasn't stopped me from doing my fair share of traveling! I've learned a lot navigating the world of visas and paperwork.</p>
-        <p>I'm building CrossBordersClub – a larger community and resource hub to make this easier for everyone.</p>
-        <p>For now, think of this chat as your AI companion. It uses insights gathered from real traveler experiences on communities like Reddit to help answer your questions on visas, passports, and immigration. Enjoy the assist! 🌍</p>
+    <div style="padding: 1rem; background: #f8f9fa; border-radius: 12px; margin-bottom: 1rem; border: 1px solid #e9ecef;">
+        <h4 style="margin-top: 0; font-size: 1rem;">Welcome! 👋</h4>
+        <p style="font-size: 0.9rem; margin-bottom: 0.5rem;">I'm <strong>Rooban</strong>. Holding a passport that requires extra planning hasn't stopped me from doing my fair share of traveling! I've learned a lot navigating the world of visas and paperwork.</p>
+        <p style="font-size: 0.9rem; margin-bottom: 0.5rem;">That's why I'm creating CrossBordersClub, a future platform dedicated to helping travelers share knowledge and overcome these hurdles.</p>
+        <p style="font-size: 0.9rem; margin-bottom: 0.5rem;">While that's being built, please use this AI assistant! It's designed to be your helpful companion, drawing information from real-world experiences shared on places like Reddit to tackle your visa and immigration queries. Stay tuned for more! ✈️</p>
+    </div>
+    
+    <div style="text-align: center; margin-bottom: 0.5rem;">
+        <div style="color: #666; font-size: 0.8rem;">↓ Scroll for example questions ↓</div>
+        <div style="color: #1976D2; font-size: 1.2rem;">⋮</div>
     </div>
     """, unsafe_allow_html=True)
     
     st.subheader("💡 Popular Questions")
+    
+    # Example Questions container with custom styling
+    st.markdown("""
+    <div style="background: #fff; padding: 0.5rem; border-radius: 8px; border: 1px solid #e0e0e0;">
+    """, unsafe_allow_html=True)
     
     # Example Questions
     example_questions = [
@@ -123,15 +133,21 @@ with st.sidebar:
     ]
     
     for question in example_questions:
-        if st.button(question, key=f"btn_{question}", disabled=st.session_state.processing):
+        if st.button(
+            question, 
+            key=f"btn_{question}", 
+            disabled=st.session_state.processing,
+            use_container_width=True
+        ):
             handle_example_question(question)
             st.rerun()
     
-    # Disclaimer
+    st.markdown("</div>", unsafe_allow_html=True)
+    
+    # Disclaimer with reduced padding
     st.markdown("""
-    <div style="font-size: 0.9rem; color: #666; padding: 1.25rem; background-color: #fff8e1; border-radius: 12px; margin: 1.5rem 0; border-left: 4px solid #ffc107;">
-        ⚠️ <strong>Important Note:</strong> Information provided is gathered from Reddit discussions and online sources. 
-        While we strive for accuracy, always verify with official government sources or consult with immigration professionals.
+    <div style="font-size: 0.8rem; color: #666; padding: 0.75rem; background-color: #fff8e1; border-radius: 8px; margin-top: 1rem; border-left: 3px solid #ffc107;">
+        ⚠️ <strong>Note:</strong> Information is gathered from Reddit discussions. Always verify with official sources.
     </div>
     """, unsafe_allow_html=True)
 
