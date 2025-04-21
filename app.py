@@ -15,8 +15,18 @@ st.set_page_config(
 
 # Add mobile notice
 st.markdown("""
-    <div style="background-color: #fff3cd; color: #856404; padding: 0.5rem; border: 1px solid #ffeeba; border-radius: 4px; margin-bottom: 1rem; text-align: center; font-size: 0.9rem;">
-        📱 <strong>Note:</strong> For the best experience, please view on desktop. Mobile optimization coming soon!
+    <div style="background: linear-gradient(135deg, rgba(25,118,210,0.05) 0%, rgba(33,150,243,0.05) 100%); 
+                color: #1976D2; 
+                padding: 0.5rem; 
+                border-left: 3px solid #1976D2; 
+                border-right: 3px solid #1976D2;
+                border-radius: 4px; 
+                margin: 0.5rem 0; 
+                text-align: center; 
+                font-size: 0.85rem;
+                backdrop-filter: blur(10px);
+                box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+        💻 Best viewed on desktop • Mobile version coming soon!
     </div>
 """, unsafe_allow_html=True)
 
@@ -113,7 +123,7 @@ with st.sidebar:
     </div>
     
     <div style="text-align: center; margin-bottom: 0.5rem;">
-        <div style="color: #666; font-size: 0.8rem;">↓ Scroll for example questions ↓</div>
+        <div style="color: #666; font-size: 0.8rem;">↓ Scroll for popular questions ↓</div>
         <div style="color: #1976D2; font-size: 1.2rem;">⋮</div>
     </div>
     """, unsafe_allow_html=True)
