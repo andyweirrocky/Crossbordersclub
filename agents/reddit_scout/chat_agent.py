@@ -10,7 +10,7 @@ class ChatAgent:
         genai.configure(api_key=os.getenv('GOOGLE_API_KEY'))
         
         # Initialize the model with the correct version
-        self.model = genai.GenerativeModel('models/gemini-2.0-flash')
+        self.model = genai.GenerativeModel('gemini-2.0-flash')
         
         # Define greeting patterns
         self.greeting_patterns = [
