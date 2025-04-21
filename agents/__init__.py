@@ -2,8 +2,8 @@
 This module contains the AI agents for the application.
 """
 
-from agents.reddit_scout.agent import agent
+from agents.reddit_scout.chat_agent import chat_agent
 
-# Make the agent available at the root level
-__all__ = ['agent']
+# Make the chat_agent available at the root level
+__all__ = ['chat_agent']
 
