@@ -153,13 +153,13 @@ with st.sidebar:
 
 # Main content
 st.markdown("""
-    <div style="background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%); color: white; padding: 3rem 2rem; border-radius: 24px; margin: -2rem -1rem 2rem -1rem; position: relative; overflow: hidden; box-shadow: 0 10px 30px rgba(33,150,243,0.2);">
-        <div style="position: absolute; top: 0; right: 0; width: 300px; height: 300px; background: linear-gradient(45deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%); border-radius: 50%; transform: translate(100px, -100px);"></div>
+    <div style="background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%); color: white; padding: 2rem 1.5rem; border-radius: 20px; margin: -1rem -1rem 1.5rem -1rem; position: relative; overflow: hidden; box-shadow: 0 8px 20px rgba(33,150,243,0.15);">
+        <div style="position: absolute; top: 0; right: 0; width: 200px; height: 200px; background: linear-gradient(45deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%); border-radius: 50%; transform: translate(50px, -50px);"></div>
         <div style="position: relative; z-index: 1;">
-            <h1 style="font-size: 3.5rem; font-weight: 800; margin-bottom: 1.5rem; line-height: 1.2; color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.1); background: linear-gradient(120deg, #ffffff 0%, #e3f2fd 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Your AI Visa & Immigration Assistant</h1>
-            <p style="font-size: 1.35rem; opacity: 0.95; max-width: 700px; line-height: 1.6; margin-bottom: 2rem; text-shadow: 0 1px 2px rgba(0,0,0,0.1);">Navigate the complexities of global mobility with AI-powered insights from real community experiences. Get accurate, up-to-date information about visas, immigration, and citizenship opportunities.</p>
-            <div style="display: inline-block; padding: 0.75rem 1.5rem; background: rgba(255,255,255,0.1); border-radius: 12px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2);">
-                <span style="font-size: 1.1rem; font-weight: 500;">🔍 Ask me anything about visas and immigration</span>
+            <h1 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem; line-height: 1.2; color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.1);">Your AI Visa & Immigration Assistant</h1>
+            <p style="font-size: 1.1rem; opacity: 0.95; max-width: 700px; line-height: 1.5; margin-bottom: 1.5rem; text-shadow: 0 1px 2px rgba(0,0,0,0.1);">Navigate the complexities of global mobility with AI-powered insights from real community experiences. Get accurate, up-to-date information about visas, immigration, and citizenship opportunities.</p>
+            <div style="display: inline-block; padding: 0.5rem 1rem; background: white; border-radius: 8px; color: #1976D2; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                <span style="font-size: 1rem; font-weight: 500;">💬 Start chatting below to get visa & immigration help</span>
             </div>
         </div>
     </div>
